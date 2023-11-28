@@ -12,7 +12,6 @@ WORKDIR /app
 # Копируем файл requirements.txt в контейнер
 COPY requirements.txt /app/
 
-# Устанавливаем зависимости
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
