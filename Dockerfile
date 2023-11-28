@@ -1,20 +1,24 @@
-# Use an official Python runtime as a parent image
+# Используем базовый образ Python с установленными зависимостями
 FROM python:3.9-slim
 
-# Set the working directory to /app
+# Устанавливаем переменную окружения для отключения вывода предупреждений Python
+ENV PYTHONDONTWRITEBYTECODE 1
+# Устанавливаем переменную окружения для вывода логов в реальном времени
+ENV PYTHONUNBUFFERED 1
+
+# Создаем и устанавливаем рабочую директорию в /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Копируем файл requirements.txt в контейнер
+COPY requirements.txt /app/
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Устанавливаем зависимости
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Копируем все файлы из текущей директории в контейнер
+COPY . /app/
 
-# Define environment variable
-ENV NAME World
+# Определяем команду для запуска приложения
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# Run app.py when the container launches
-CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
