@@ -15,7 +15,7 @@ RUN apt-get update \
 WORKDIR /app
 
 # Copy the dependencies file to the working directory
-COPY requirements.txt /app/  # Добавлен этот шаг
+COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
