@@ -1,25 +1,25 @@
-# Используем базовый образ Python с установленными зависимостями
-FROM python:3.9-slim
+# Use the official Python image
+FROM python:3.8-slim
 
-# Устанавливаем переменную окружения для отключения вывода предупреждений Python
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
-# Устанавливаем переменную окружения для вывода логов в реальном времени
 ENV PYTHONUNBUFFERED 1
 
-# Создаем и устанавливаем рабочую директорию в /app
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Копируем файл requirements.txt в контейнер
+# Copy the dependencies file to the working directory
 COPY requirements.txt /app/
 
-# Устанавливаем зависимости
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install any needed packages specified in requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Копируем все файлы из текущей директории в контейнер
+# Copy the content of the local src directory to the working directory
 COPY . /app/
-
-# Определяем команду для запуска приложения
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
