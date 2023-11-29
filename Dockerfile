@@ -5,11 +5,15 @@ FROM python:3.8-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies for building Python extensions
+# Install system dependencies for building Python extensions and Rust
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && export PATH="$HOME/.cargo/bin:$PATH" \
+    && rustup install stable \
+    && rustup default stable
 
 # Set the working directory in the container
 WORKDIR /app
