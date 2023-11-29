@@ -1,32 +1,21 @@
-# Use the official Python image
-FROM python:3.8-slim
+Dockerfile:FROM python:3.10-alpine
 
-# Set environment variables
+WORKDIR /usr/src/app
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies for building Python extensions, Rust, and curl
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential curl
+COPY ./requirements.txt .
 
-# Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh \
-    && sh rustup-init.sh -y --no-modify-path --default-toolchain stable \
-    && rm rustup-init.sh
+RUN pip install --no-cache --upgrade pip \
+ && pip install --no-cache -r requirements.txt \
+ && pip install --no-cache gunicorn
 
-# Add Rust binaries to the system PATH
-ENV PATH="/root/.cargo/bin:${PATH}"
+COPY . .
 
-# Set the working directory in the container
-WORKDIR /app
+RUN python manage.py makemigrations
 
-# Copy the dependencies file to the working directory
-COPY requirements.txt /app/
+EXPOSE 8000
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-
-# Copy the content of the local src directory to the working directory
-COPY . /app/
-
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
