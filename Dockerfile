@@ -5,7 +5,7 @@ FROM python:3.8-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies
+# Install system dependencies for building Python extensions
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential \
     && apt-get clean \
@@ -22,4 +22,5 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Copy the content of the local src directory to the working directory
 COPY . /app/
+
 
