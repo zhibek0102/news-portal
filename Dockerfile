@@ -7,19 +7,15 @@ ENV PYTHONUNBUFFERED 1
 
 # Install system dependencies for building Python extensions and Rust
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential
 
 # Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh \
+    && sh rustup-init.sh -y --no-modify-path --default-toolchain stable \
+    && rm rustup-init.sh
 
 # Add Rust binaries to the system PATH
 ENV PATH="/root/.cargo/bin:${PATH}"
-
-# Install the stable version of Rust
-RUN rustup install stable \
-    && rustup default stable
 
 # Set the working directory in the container
 WORKDIR /app
@@ -32,3 +28,4 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Copy the content of the local src directory to the working directory
 COPY . /app/
+
