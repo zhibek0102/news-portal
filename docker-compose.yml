@@ -1,23 +1,28 @@
-version: '3'
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  django:
+    container_name: news
+    image: news
+    build: .
+    restart: unless-stopped
     ports:
       - "8000:8000"
     volumes:
-      - ./articles:/app/articles
-      - ./news:/app/news
-      - ./media:/app/media
-      - ./templates:/app/templates
+      - django-static:/usr/src/app/staticfiles
+      - ./db.sqlite3:/usr/src/app/db.sqlite3
+      - ./media:/usr/src/app/media
     depends_on:
-      - db
-  db:
+      - postgres
+    command: python /usr/src/app/manage.py runserver
+
+  postgres:
+    container_name: postgres
     image: postgres:latest
+    restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: news
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  django-static:
