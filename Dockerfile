@@ -5,17 +5,17 @@ FROM python:3.8-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies for building Python extensions and other tools
+# Install system dependencies for building Python extensions and Rust
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential curl \
+    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust using rustup
+# Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-# Add Rust binaries to the PATH
-ENV PATH="$HOME/.cargo/bin:$PATH"
+# Add Rust binaries to the system PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install the stable version of Rust
 RUN rustup install stable \
