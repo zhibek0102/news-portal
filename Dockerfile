@@ -1,4 +1,4 @@
-Dockerfile:FROM python:3.10-alpine
+FROM python:3.10-alpine
 
 WORKDIR /usr/src/app
 
@@ -18,4 +18,3 @@ RUN python manage.py makemigrations
 EXPOSE 8000
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-
