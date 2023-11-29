@@ -1,12 +1,7 @@
 FROM python:3.10-alpine
 
-# Установка зависимостей для сборки numpy
-RUN apk --no-cache add build-base \
-    && apk --no-cache add python3-dev \
-    && apk --no-cache add libffi-dev \
-    && apk --no-cache add openssl-dev \
-    && apk --no-cache add libc-dev \
-    && apk --no-cache add py3-numpy@edgecommunity
+# Установка зависимостей для сборки некоторых пакетов
+RUN apk --no-cache add build-base python3-dev libffi-dev openssl-dev libc-dev
 
 WORKDIR /usr/src/app
 
@@ -26,4 +21,5 @@ RUN python manage.py makemigrations
 EXPOSE 8000
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+
 
