@@ -1,20 +1,15 @@
 # Use the official Python image
-# Use the official Python image
 FROM python:3.8-slim
-
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Rust and Cargo
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev musl-dev build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
 WORKDIR /app
