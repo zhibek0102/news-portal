@@ -1,7 +1,12 @@
 FROM python:3.10-alpine
 
 # Установка зависимостей для сборки numpy
-RUN apk --no-cache add build-base
+RUN apk --no-cache add build-base \
+    && apk --no-cache add python3-dev \
+    && apk --no-cache add libffi-dev \
+    && apk --no-cache add openssl-dev \
+    && apk --no-cache add libc-dev \
+    && apk --no-cache add py3-numpy@edgecommunity
 
 WORKDIR /usr/src/app
 
